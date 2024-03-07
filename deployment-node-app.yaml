@@ -1,0 +1,36 @@
+# Deployment for Nginx
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec: # deployment specification
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template: # deployment under pods information
+    metadata:
+      labels:
+        app: nginx
+    spec: # under pods run Container
+      containers:
+      - name: nginx
+        image: nginx:latest #also set custom images
+        ports:
+        - containerPort: 80
+
+---
+# Service to expose Nginx
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080 # Specify the NodePort here
+  type: LoadBalancer # Expose service on a random node port

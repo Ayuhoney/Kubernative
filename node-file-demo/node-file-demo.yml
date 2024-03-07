@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: diff-node-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: diff-node-app
+  template:
+    metadata:
+      labels:
+        app: diff-node-app
+    spec:
+      containers:
+      - name: diff-node-app
+        image: ayushrudra/diff-pod-node-app
+        volumeMounts:
+          - name: myvol
+            mountPath: /app/email.txt
+      volumes:
+        - name: myvol
+          hostPath:
+            path: /home/ri-dev/Desktop/  # Path to the directory where email.txt resides
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: diff-node-app
+spec:
+  ports:
+    - name: http
+      port: 8082
+      targetPort: 3000
+  selector:
+    app: diff-node-app
+  type: LoadBalancer

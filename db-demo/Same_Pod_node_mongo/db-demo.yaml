@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-nodedb-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodedb-app
+  template:
+    metadata:
+      labels:
+        app: nodedb-app
+    spec:
+      containers:
+      - name:  nodedb-app
+        image: ayushrudra/kube-nodemognodb
+      - name: mongodb
+        image: mongo:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-my-nodedb-app
+spec:
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 3000
+  selector:
+    app: nodedb-app
+  type: NodePort
+
